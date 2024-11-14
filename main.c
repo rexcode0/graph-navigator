@@ -8,21 +8,21 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
 {
     char buff = 'o';
     int x = 0, y = 0;
-    putchar(' ');
     while (buff != 'q')
     {
+        putchar(' ');
         for (int i = 0; i < cor_y; i++) // loop to iteratete into y cordinate or the height of display
         {
             for (int j = 0; j < cor_x; j++) // loop to iterate into x cordinate or width of the display
             {
                 if (i == y && j == x)
                 {
-                    printf("\e[40m %c \e[0m",display[i][j]);
+                    printf("\e[42m %c \e[0m",display[i][j]);
                 }
                 else
                 {
-                    putchar(display[i][j]);
-                    putchar(' ');
+                    printf(" %c ",display[i][j]);
+                  
                 }
             }
         }
@@ -41,7 +41,14 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
         case 'a':
             x--;
             break;
-       
+       case 'e':
+            x++;
+            y--;
+            break;
+       case 'z':
+            x--;
+            y++;
+            break;
         default:
             if(y>=cor_y) 
             {
