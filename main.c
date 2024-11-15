@@ -4,7 +4,8 @@
 #include <termios.h>
 #include <unistd.h>
 
-int getch(void) {
+int getch(void)
+{
     struct termios oldt, newt;
     int ch;
 
@@ -24,7 +25,6 @@ int getch(void) {
 
     return ch;
 }
-
 
 void display(int cor_x, int cor_y, char display[20][21]) // code to display the display in the terminal
 {
@@ -47,8 +47,8 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
                 }
             }
         }
-        printf("x>[%d] y>[%d]\n",x,y);
-        buff = getch ();
+        printf("x>[%d] y>[%d]\n", x, y);
+        buff = getch();
         switch (buff)
         {
         case 'w':
@@ -92,8 +92,6 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
                 x = cor_x;
                 y++;
             }
-           
-            
         }
         printf("\033[H\033[J");
     }
@@ -108,15 +106,24 @@ int main()
     for (int y = 0; y < cordinate_y; y++) // main loop to add characters to the y cordinate
     {
         for (int x = 0; x < cordinate_x; x++)
-        {
-            if (x == 20)
+            for (int x = 0; x < cordinate_x; x++)
             {
-                page[y][x] = '\n';
+                if (x == 20)
+                {
+                    page[y][x] = '\n';
+                }
+                else
+                    page[y][x] = '#';
+                if (x == 20)
+                {
+                    page[y][x] = '\n';
+                }
+                else
+                    page[y][x] = '#';
             }
-            else
-                page[y][x] = '#';
-        }
     }
+    display(21, 20, page);
+
     display(21, 20, page);
 
     return 0;
