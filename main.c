@@ -2,7 +2,29 @@
 // that can navigate through the complete array on the screen using w,s,d,a
 #include <stdio.h>
 #include <termios.h>
-#include <termios.h>
+#include <unistd.h>
+
+int getch(void) {
+    struct termios oldt, newt;
+    int ch;
+
+    // Save the current terminal settings
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+
+    // Disable canonical mode and echo
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+    // Read a single character
+    ch = getchar();
+
+    // Restore the old terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+    return ch;
+}
+
 
 void display(int cor_x, int cor_y, char display[20][21]) // code to display the display in the terminal
 {
@@ -17,16 +39,16 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
             {
                 if (i == y && j == x)
                 {
-                    printf("\e[42m %c \e[0m",display[i][j]);
+                    printf("\e[42m %c \e[0m", display[i][j]);
                 }
                 else
                 {
-                    printf(" %c ",display[i][j]);
-                  
+                    printf(" %c ", display[i][j]);
                 }
             }
         }
-        buff =getchar();
+        printf("x>[%d] y>[%d]\n",x,y);
+        buff = getch ();
         switch (buff)
         {
         case 'w':
@@ -41,27 +63,58 @@ void display(int cor_x, int cor_y, char display[20][21]) // code to display the 
         case 'a':
             x--;
             break;
-       case 'e':
+        case 'e':
             x++;
             y--;
             break;
-       case 'z':
+        case 'z':
             x--;
             y++;
             break;
         default:
-            if(y>=cor_y) 
+            if (y >= cor_y) // if exceeds downwards
             {
                 x++;
-                y=0;
+                y = 0;
             }
-            else if(x>=cor_x)
+            if (x >= cor_x) // if exceeds right
             {
                 y++;
-                x=0;
+                x = 0;
             }
+            if (y <= 0) // if exceeds upwards
+            {
+                x++;
+                y = cor_y - 1;
+            }
+            if (x <= 0) // if exceeds left
+            {
+                x = cor_x;
+                y++;
+            }
+            // if(x>=cor_x&&y>=cor_y)//if exceeds down right
+            // {
+            //     x=0;
+            //     y=0;
+            // }
+            // if (x<=0&&y<=0)//if exceeds upeer left
+            // {
+            //     x=cor_x;
+            //     y=cor_y;
+            // }
+            // if(x<=cor_x)//if exceeds upper right
+            // {
+            //     x=0;
+            //     y=cor_x;
+            // }
+            // if (x<=0&&y>=cor_y)
+            // {
+            //     x=cor_x;
+            //     y=0;
+            // }
+            
         }
-         printf("\033[H\033[J");
+        printf("\033[H\033[J");
     }
 }
 
